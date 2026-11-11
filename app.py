@@ -1,10 +1,12 @@
 from flask import Flask, render_template_string, request, redirect, url_for, session, jsonify
 import sqlite3
 import os
+import secrets
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = '653-254-338'  # 生产环境请更换
+# 从环境变量读取；未设置时每次启动生成随机密钥（重启后旧 session 会失效）。
+app.secret_key = os.environ.get('FLASK_SECRET_KEY') or secrets.token_hex(32)
 
 # SQLite 数据库文件路径
 DB_PATH = 'student_management.db'

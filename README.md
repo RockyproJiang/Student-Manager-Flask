@@ -1,56 +1,51 @@
-# 学生管理系统
+# Student-Manager-Flask
 
-一个基于 Flask 的学生信息管理系统，支持学生信息的增删改查和用户认证功能。
+基于 Flask + SQLite 的 Web 学生信息管理系统，响应式页面，支持注册登录、学生信息增删改查与多条件搜索。
 
-## 功能特点
+## 功能特性
 
-- 🔐 用户注册与登录
-- 📝 学生信息的增删改查
-- 🔍 多条件搜索（姓名、学号、年龄）
-- 📱 响应式设计，支持移动端
-- 💾 SQLite 数据库存储
+- 响应式 Web 页面，HTML 模板由 `render_template_string` 内联在 `app.py` 中，无需前端构建
+- 用户注册、登录、登出（基于 Flask session）
+- 学生信息新增、查询、修改、删除（REST 风格接口）
+- 按姓名、学号、年龄多条件搜索
+- SQLite 数据库 `student_management.db` 在首次启动时自动创建并建表，无需手动初始化
 
-## 技术栈
+## 技术栈与依赖
 
-- 后端：Flask (Python)
-- 前端：HTML5 + CSS3 + JavaScript
-- 数据库：SQLite
+- Python 3、Flask==2.3.3、sqlite3（标准库）
+- 前端为内联 HTML / CSS / JavaScript，无打包或构建步骤
+- 依赖见 `requirements.txt`：Flask==2.3.3
 
-## 安装与运行
+## 目录结构
 
-### 1. 克隆项目
-
-```bash
-git clone https://github.com/yourusername/student-management-system.git
-cd student-management-system
+```text
+Student-Manager-Flask/
+├── app.py             # 应用入口：路由、业务逻辑与内联 HTML 模板
+├── requirements.txt   # Flask==2.3.3
+├── .gitignore         # 忽略 __pycache__/、*.py[cod]、*.db 等
+├── LICENSE            # MIT 许可证
+└── README.md          # 本说明
 ```
 
-### 2. 安装依赖
+## 快速开始
+
+```bash
+git clone https://github.com/RockyproJiang/Student-Manager-Flask.git
+cd Student-Manager-Flask
 pip install -r requirements.txt
-
-
-### 3. 运行应用
 python app.py
+```
 
-### 4. 访问应用
-打开浏览器访问：http://localhost:5000
+默认以 `host='0.0.0.0'`、`port=5000`、`debug=True` 启动，浏览器访问 `http://127.0.0.1:5000/`。首次运行自动创建 `student_management.db`。
 
-**使用说明**
->首次使用需要注册账号
-    登录后可以查看学生列表
-    点击"添加学生"按钮添加新学生
-    点击"编辑"按钮修改学生信息
-    点击"删除"按钮删除学生
-    使用搜索功能快速查找学生
+## 配置与安全说明
 
-**项目结构**
-student-management-system/
-├── app.py              # 主应用程序
-├── requirements.txt    # 依赖包列表
-├── .gitignore         # Git忽略文件
-└── README.md          # 项目说明文档
+- `FLASK_SECRET_KEY` 环境变量作为 Flask session 签名密钥；未设置时每次启动用 `secrets.token_hex(32)` 生成随机密钥，因此重启后旧登录态失效。原先硬编码的 `app.secret_key = '653-254-338'` 已移除。
+- 数据库文件 `student_management.db` 自动创建，包含 `login_table` 与 `info_table`。
+- **安全说明**：登录密码明文存于 `login_table.st_password` 并明文比对，仅用于本地学习演示，切勿用于生产环境、不要使用真实密码；正式使用应改为加盐哈希（如 bcrypt / argon2）。
+- `host='0.0.0.0'` 与 `debug=True` 为开发默认值，生产环境请关闭调试、配合 WSGI 服务器与反向代理，并限制访问来源。
+- 仓库已从版本库移除误提交的 `__pycache__`，并通过 `.gitignore` 忽略，`*.db` 等本地数据文件同样不会进入版本库。
 
-**注意事项**
-- 生产环境请修改 app.secret_key
-- 数据库文件会自动创建在项目根目录
-- 默认运行在 5000 端口
+## 许可证
+
+本项目采用 MIT 许可证，详见 LICENSE。
